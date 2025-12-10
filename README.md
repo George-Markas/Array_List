@@ -56,3 +56,17 @@ void print_contents(const AList_t* array_list) {
     printf("-- capacity: %zu --\n\n", array_list->capacity);
 }
 ```
+
+## Using in a project
+The simplest way is to just add the source and header to the rest of your project files.
+Additionally, a Makefile is provided that will generate a static library you can link against
+like so:
+```sh
+git clone https://github.com/George-Markas/Array_List.git
+cd Array_List
+make
+cp libarray_list.a /somewhere/in/your/project
+make clean
+cd /your/project/
+gcc your_project.c -L. -larray_list -o your_project_bin
+```
