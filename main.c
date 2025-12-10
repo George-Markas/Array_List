@@ -1,36 +1,50 @@
 #include <stdio.h>
 #include "array_list.h"
 
-typedef struct FavouriteNumber {
+typedef struct MathConstant {
     double num;
     const char* name;
-} fave_num_t;
+} num_t;
+
+void print_contents(const AList_t* array_list);
 
 int main(void) {
-    AList_t* array_list = array_list_new(sizeof(fave_num_t));
+    AList_t* array_list = array_list_new(sizeof(num_t));
 
-    const fave_num_t pi = {.num = 3.14159, .name = "pi"};
-    const fave_num_t e = {.num = 2.71828, .name = "e"};
-    const fave_num_t phi = {.num = 1.61803, .name = "phi"};
-    const fave_num_t tau = {.num = 6.28318, .name = "tau"};
-    const fave_num_t g = {.num = 0.83462, .name = "g"};
+    const num_t pi = {.num = 3.14159, .name = "pi"};
+    const num_t e = {.num = 2.71828, .name = "e"};
+    const num_t phi = {.num = 1.61803, .name = "phi"};
+    const num_t tau = {.num = 6.28318, .name = "tau"};
+    const num_t g = {.num = 0.83462, .name = "g"};
 
-    printf("-- Pre expansion capacity: %zu --\n", array_list->capacity);
-
+    // Append the structs
     array_list_add(array_list, &pi);
     array_list_add(array_list, &e);
     array_list_add(array_list, &phi);
     array_list_add(array_list, &tau);
-    array_list_add(array_list, &g); // Should automatically expand here
+    array_list_add(array_list, &g); // Should expand here
+    print_contents(array_list);
 
-    printf("%s: %f\n", ((fave_num_t *) array_list->data + 0)->name, ((fave_num_t *) array_list->data + 0)->num);
-    printf("%s: %f\n", ((fave_num_t *) array_list->data + 1)->name, ((fave_num_t *) array_list->data + 1)->num);
-    printf("%s: %f\n", ((fave_num_t *) array_list->data + 2)->name, ((fave_num_t *) array_list->data + 2)->num);
-    printf("%s: %f\n", ((fave_num_t *) array_list->data + 3)->name, ((fave_num_t *) array_list->data + 3)->num);
-    printf("%s: %f\n", ((fave_num_t *) array_list->data + 4)->name, ((fave_num_t *) array_list->data + 3)->num);
+    // Remove 3 elements
+    array_list_remove(array_list);
+    array_list_remove(array_list);
+    array_list_remove(array_list); // Should shrink here
+    print_contents(array_list);
 
-    printf("-- Post expansion capacity: %zu --\n", array_list->capacity);
+    // Overwrite e with phi
+    array_list_set(array_list, 1, &phi);
+    print_contents(array_list);
 
+    // Free everything
     array_list_delete(array_list);
+
     return 0;
+}
+
+void print_contents(const AList_t* array_list) {
+    for(size_t i = 0; i < array_list->length; i++) {
+        printf("[%zu] %s: %g\n", i, ((num_t *) array_list_get(array_list, i))->name,
+               ((num_t *) array_list_get(array_list, i))->num);
+    }
+    printf("-- capacity: %zu --\n\n", array_list->capacity);
 }

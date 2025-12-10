@@ -21,6 +21,8 @@ AList_t* array_list_new(size_t element_size) {
 
 bool array_list_add(AList_t* array_list, const void* val) {
     if(array_list == NULL) return false;
+
+    // If occupancy reaches max capacity, double the max capacity
     if(array_list->length + 1 > array_list->capacity) {
         void* new_ptr = realloc(array_list->data, BYTE_CAPACITY * 2);
         if(new_ptr == NULL) return false;
@@ -28,8 +30,41 @@ bool array_list_add(AList_t* array_list, const void* val) {
         array_list->capacity *= 2;
     }
 
-    memcpy(DATA_OFFSET, (void*) val, array_list->element_size);
+    memcpy(LENGTH_OFFSET, (void*) val, array_list->element_size);
     array_list->length++;
+
+    return true;
+}
+
+void* array_list_get(const AList_t* array_list, const size_t index) {
+    if(array_list == NULL) return NULL;
+    if(index >= array_list->length) return NULL;
+
+    return INDEX_OFFSET(index);
+}
+
+bool array_list_set(const AList_t* array_list, const size_t index, const void* val) {
+    if(array_list == NULL) return false;
+    if(index >= array_list->length) return false;
+    memcpy(INDEX_OFFSET(index), (void*) val, array_list->element_size);
+
+    return true;
+}
+
+bool array_list_remove(AList_t* array_list) {
+    if(array_list == NULL) return false;
+    if(array_list->length < 1) return false;
+
+    // If occupancy is a quarter or less of max capacity, halve the max capacity
+    if(array_list->length - 1 <= array_list->capacity / 4) {
+        void* new_ptr = realloc(array_list->data, BYTE_CAPACITY / 2);
+        if(new_ptr == NULL) return false;
+        array_list->data = new_ptr;
+        array_list->capacity /= 2;
+    }
+
+    array_list->length--;
+
     return true;
 }
 
