@@ -57,21 +57,3 @@ void print_contents(const AList_t* array_list) {
 }
 ```
 
-## Using in a project
-You can install the library with the included Makefile:
-```sh
-git clone https://github.com/George-Markas/Array_List.git
-cd Array_List
-sudo make install
-```
-
-To link against it:
-```sh
-cc hello.c -larray_list -o hello
-```
-
-To uninstall it:
-```
-sudo make clean uninstall
-```
-

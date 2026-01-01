@@ -1,36 +1,22 @@
 CC = cc
-CFLAGS = -std=c11 -Wall -Wextra
-
-PREFIX = /usr/local
-LIBDIR = $(PREFIX)/lib
-INCDIR = $(PREFIX)/include
+CFLAGS = -std=c11 -Wall -Wextra -O2
 
 SRC = array_list.c
 INC = array_list.h
 OBJ = $(SRC:.c=.o)
 
-TARGET = libarray_list.a
-
-all: $(TARGET)
+all: libarray_list.a libarray_list.so
 
 $(OBJ): $(SRC)
-	$(CC) $(CFLAGS) $(SRC) -c -o $@
+	$(CC) -fpic $(CFLAGS) $(SRC) -c -o $@
 
-$(TARGET): $(OBJ)
+libarray_list.a: $(OBJ)
 	ar rcs $@ $(OBJ)
 
+libarray_list.so: $(OBJ)
+	$(CC) -shared $(CFLAGS) $(OBJ) -o $@
+
 clean:
-	rm -f $(TARGET) $(OBJ)
+	rm -f $(OBJ) libarray_list.a libarray_list.so
 
-install: all
-	install -d $(DESTDIR)$(LIBDIR)
-	install -m 644 libarray_list.a $(DESTDIR)$(LIBDIR)
-	install -d $(DESTDIR)$(INCDIR)
-	install -m 644 $(INC) $(DESTDIR)$(INCDIR)
-	ldconfig || true
-
-uninstall:
-	rm -f $(DESTDIR)$(LIBDIR)/$(TARGET)
-	rm -f $(DESTDIR)$(INCDIR)/$(INC)
-
-.PHONY: all clean install uninstall
+.PHONY: all clean
