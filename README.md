@@ -1,13 +1,17 @@
 # Array List
-
 This is an implementation of an array list in C.
 Check the [header](array_list.h) for the related functions.
 
-## Usage
-Clone this repository and run `make` (or `make debug` to include debug symbols).
-This will generate the directory `build` containing `libarray_list.a`.
-Use the provided header and link against the library with `-larray_list`. The path to the library
-may need to be specified e.g. `-L/path/to/array_list/build`.
+## Compilation
+```sh
+git clone https://github.com/George-Markas/Array_List.git
+cd Array_List
+make # or 'make debug' to include debug symbols
+
+# Compiling main.c
+cd ..
+cc main.c -I./Array_List -L./Array_List/build -larray_list -o main
+```
 
 ## Example
 ```c
@@ -62,4 +66,3 @@ void print_contents(const AList_t* array_list) {
     printf("-- capacity: %zu --\n\n", array_list->capacity);
 }
 ```
-
